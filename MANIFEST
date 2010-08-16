@@ -1,18 +1,20 @@
-(package ucl-process (0 1)
-  (synopsis "Subprocess manipulation routines")
-  (description "Facilities for launching, \
-                controlling, and communicating \
-                with child processes")
-  (category "UCL")
+(package ucl-process)
+(version 0 1)
+(category "UCL")
 
-  (author "Will Donnelly")
-  (email "wgd@willdonnelly.net")
+(synopsis "Subprocess manipulation routines")
+(description "Facilities for launching, \
+              controlling, and communicating \
+              with child processes")
 
-  (license BSD3)
-  (license-file "LICENSE")
+(author "Will Donnelly")
+(email "wgd@willdonnelly.net")
 
-  (code "ucl/process.sls" "ucl/process/*.sls")
+(license BSD3)
+(license-file "LICENSE")
 
-  (depends ucl-prelude)
+(code "ucl/process.sls" "ucl/process/*.sls")
 
-  (schemes ikarus mosh ypsilon plt larceny))
+(depends ucl-prelude)
+
+(schemes ikarus mosh ypsilon plt larceny)
