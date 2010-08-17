@@ -1,0 +1,38 @@
+UCL PROCESS
+===========
+
+Launch and communicate with subprocesses.
+
+PROCESS-LAUNCH path . args
+  Launch a process. Return a process object consisting of a 5-element vector:
+    * stdin
+    * stdout
+    * stderr
+    * pid
+    * extra data
+  The ports are binary by default
+
+PROCESS-STDIN proc
+PROCESS-STDOUT proc
+PROCESS-STDERR proc
+PROCESS-PID proc
+   Synonyms to (VECTOR-REF proc [0-3]), mostly provided for code clarity
+
+PROCESS-KILL proc [signal]
+   Kills the process. The optional signal can be either 'SIGKILL or 'SIGTERM,
+   defaulting to 'SIGTERM if not provided.
+
+PROCESS-WAIT proc
+   Wait until the subprocess returns. Returns the exit code.
+
+PROCESS-CLOSE proc
+   Close all ports to the process.
+
+SHELL-EXEC strip? . command
+   Execute a command with /bin/sh and return a string holding the output. If the
+   output ends in a newline, it can optionally be stripped. Uses multiple return
+   values to also return the output on stderr and the exit code.
+
+SHELL
+   Execute a command with SHELL-EXEC after running the TEMPLATE function from
+   UCL-Prelude on the input arguments. Raises an error on a nonzero exit code.
