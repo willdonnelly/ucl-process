@@ -10,9 +10,9 @@
     (let-values (((pid stdin stdout stderr) (apply process path args)))
       ;; And then we return it all
       (vector
-       (transcoded-port stdin  (native-transcoder))
-       (transcoded-port stdout (native-transcoder))
-       (transcoded-port stderr (native-transcoder))
+       stdin
+       stdout
+       stderr
        pid
 
        ;; PROCESS-KILL

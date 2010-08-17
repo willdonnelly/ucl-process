@@ -11,9 +11,9 @@
     ;;   "Give me some pipes automatically."
     (let-values (((proc out in err) (apply subprocess #f #f #f path args)))
       (vector
-        (transcoded-port in (native-transcoder))
-        (transcoded-port out (native-transcoder))
-        (transcoded-port err (native-transcoder))
+        in
+        out
+        err
         (subprocess-pid proc)
 
         ;; PROCESS-KILL

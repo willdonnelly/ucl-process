@@ -39,9 +39,9 @@
               ;; And return all our stuff
               (vector
                ;; Transcode the ports.
-               (transcoded-port (open-output-descriptor mosi-w) (native-transcoder))
-               (transcoded-port (open-input-descriptor  miso-r) (native-transcoder))
-               (transcoded-port (open-input-descriptor  mise-r) (native-transcoder))
+               (open-output-descriptor mosi-w)
+               (open-input-descriptor  miso-r)
+               (open-input-descriptor  mise-r)
                pid
 
                ;; PROCESS-KILL

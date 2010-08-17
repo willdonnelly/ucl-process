@@ -27,9 +27,9 @@
               (close-port mise-w)
               (vector
                 ;; Ports and PID
-                (transcoded-port mosi-w (native-transcoder))
-                (transcoded-port miso-r (native-transcoder))
-                (transcoded-port mise-r (native-transcoder))
+                mosi-w
+                miso-r
+                mise-r
                 pid
 
                 ;; PROCESS-KILL

@@ -7,15 +7,15 @@
 ;;    Launch a process. Return a process object.
 ;;
 ;;   PROCESS-STDIN
-;;    Returns the textual output port to which
+;;    Returns the binary output port to which
 ;;     input data can be provided.
 ;;
 ;;   PROCESS-STDOUT
-;;    Returns the textual input port from which
+;;    Returns the binary input port from which
 ;;     output data can be read.
 ;;
 ;;   PROCESS-STDERR
-;;    Returns the textual input port from which
+;;    Returns the binary input port from which
 ;;     error reports can be read.
 ;;
 ;;   PROCESS-PID
@@ -76,8 +76,8 @@
   (define (shell-exec strip? . command)
     (let [(proc (process-launch "/bin/sh" "-c" (apply string-append command)))]
       (let ((exit-code (process-wait proc))
-            (output    (get-string-all (process-stdout proc)))
-            (errput    (get-string-all (process-stderr proc))))
+            (output    (get-string-all (transcoded-port (process-stdout proc) (native-transcoder))))
+            (errput    (get-string-all (transcoded-port (process-stderr proc) (native-transcoder)))))
         ;; trim the trailing newline, if desired
         (when strip?
           (when (string? output)

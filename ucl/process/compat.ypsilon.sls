@@ -10,9 +10,9 @@
   (define (process-launch path . args)
     (let ((p (apply process path args)))
       (vector
-       (transcoded-port (cadr p) (native-transcoder))
-       (transcoded-port (caddr p) (native-transcoder))
-       (transcoded-port (cadddr p) (native-transcoder))
+       (cadr p)
+       (caddr p)
+       (cadddr p)
        (car p)
 
        ;; PROCESS-KILL
