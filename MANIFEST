@@ -9,6 +9,7 @@
 
 (author "Will Donnelly")
 (email "wgd@willdonnelly.net")
+(url "http://github.com/willdonnelly/ucl-process")
 
 (license BSD3)
 (license-file "LICENSE")
