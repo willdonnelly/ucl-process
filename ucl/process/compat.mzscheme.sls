@@ -1,8 +1,9 @@
 #!r6rs
 
 (library (ucl process compat)
-  (export process-launch)
-  (import (rnrs) (only (scheme base) subprocess subprocess-kill subprocess-pid subprocess-wait subprocess-status))
+  (export process-launch process-kill process-wait)
+  (import (rnrs) (only (scheme base) subprocess subprocess-kill
+                    subprocess-pid subprocess-wait subprocess-status))
 
   ;; Here we see the entirely high-level
   ;;   approach to subprocesses
@@ -10,21 +11,15 @@
     ;; If we wanted, we could make our own pipes here, but the #f means
     ;;   "Give me some pipes automatically."
     (let-values (((proc out in err) (apply subprocess #f #f #f path args)))
-      (vector
-        in
-        out
-        err
-        (subprocess-pid proc)
+      (vector in out err (subprocess-pid proc) proc)))
 
-        ;; PROCESS-KILL
-        (let ((killed #f))
-          (lambda ()
-            ;; The last argument to SUBPROCESS-KILL decides
-            ;;   whether it will use SIGTERM or SIGKILL
-            (subprocess-kill proc killed)
-            (set! killed #t)))
+  (define (process-kill proc . sig)
+    (case (if (null? sig) 'SIGTERM (car sig))
+      ((SIGTERM) (subprocess-kill (vector-ref proc 4)))
+      ((SIGKILL) (subprocess-kill (vector-ref proc 4)))
+      (else      (error 'process-kill "unknown signal" (car sig)))))
 
-        (lambda ()
-          (subprocess-wait proc)
-          (subprocess-status proc)))))
+  (define (process-wait proc)
+    (subprocess-wait (vector-ref proc 4))
+    (subprocess-status (vector-ref proc 4)))
 )

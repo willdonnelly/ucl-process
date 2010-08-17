@@ -1,7 +1,7 @@
 #!r6rs
 
 (library (ucl process compat)
-  (export process-launch)
+  (export process-launch process-kill process-wait)
   (import (rnrs) (mosh process))
 
   ;; Mosh does a sort of compromise approach
@@ -25,24 +25,23 @@
               (close-port mosi-r)
               (close-port miso-w)
               (close-port mise-w)
-              (vector
-                ;; Ports and PID
-                mosi-w
-                miso-r
-                mise-r
-                pid
+              (vector mosi-w miso-r mise-r pid #f))))))
 
-                ;; PROCESS-KILL
-                ;; We actually use the kill program to do this,
-                ;;   because Mosh doesn't provide that command.
-                (let ((killed #f))
-                  (lambda ()
-                    (if (not killed)
-                        (process-launch "/bin/kill"      (number->string pid))
-                        (process-launch "/bin/kill" "-9" (number->string pid)))
-                    (set! killed #t)))
+  (define (kill-helper flag pid)
+    (let ((proc (process-launch "/bin/kill" flag (number->string pid))))
+      (process-wait proc)
+      (close-port (vector-ref proc 0))
+      (close-port (vector-ref prpc 1))
+      (close-port (vector-ref proc 2))))
 
-                ;; PROCESS-WAIT
-                (lambda ()
-                  (let-values (((p code) (waitpid pid))) code))))))))
+  (define (process-kill proc . sig)
+    (define pid (vector-ref proc 3))
+    (case (if (null? sig) 'SIGTERM (car sig))
+      ((SIGTERM) (kill-helper "-TERM" pid))
+      ((SIGKILL) (kill-helper "-KILL" pid))
+      (else      (error 'process-kill "unknown signal" (car sig)))))
+
+  (define (process-wait proc)
+    (define pid (vector-ref proc 3))
+    (let-values (((p code) (waitpid pid))) code))
 )

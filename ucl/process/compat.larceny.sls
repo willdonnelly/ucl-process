@@ -1,7 +1,7 @@
 #!r6rs
 
 (library (ucl process compat)
-  (export process-launch)
+  (export process-launch process-kill process-wait)
   (import (rnrs) (primitives r5rs:require unix/pipe unix/fork unix/waitpid
                   unix/close unix/dup2 unix/execl unix/exit
                   open-output-descriptor open-input-descriptor))
@@ -43,20 +43,26 @@
                (open-input-descriptor  miso-r)
                (open-input-descriptor  mise-r)
                pid
+               #f))))))
 
-               ;; PROCESS-KILL
-               (let ((killed #f))
-                 (lambda ()
-                   ;; Provide the whole "SIGTERM, then SIGKILL" thing.
-                   (if (not killed)
-                       (process-launch "/bin/kill" (number->string pid))
-                       (process-launch "/bin/kill" "-9" (number->string pid)))
-                   (set! killed #t)))
+  (define (kill-helper flag pid)
+    (let ((proc (process-launch "/bin/kill" flag (number->string pid))))
+      (process-wait proc)
+      (close-port (vector-ref proc 0))
+      (close-port (vector-ref prpc 1))
+      (close-port (vector-ref proc 2))))
 
-               ;; PROCESS-WAIT
-               (lambda ()
-                 (fix-endianness
-                   (let-values (((p code) (unix/waitpid pid))) code)))))))))
+  (define (process-kill proc . sig)
+    (define pid (vector-ref proc 3))
+    (case (if (null? sig) 'SIGTERM (car sig))
+      ((SIGTERM) (kill-helper "-TERM" pid))
+      ((SIGKILL) (kill-helper "-KILL" pid))
+      (else      (error 'process-kill "unknown signal" (car sig)))))
+
+  (define (process-wait proc)
+    (define pid (vector-ref proc 3))
+    (fix-endianness
+      (let-values (((p code) (unix/waitpid pid))) code)))
 
   ;; larceny fucks up exit code endianness for me, so whatever
   (define (fix-endianness code)
