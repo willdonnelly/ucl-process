@@ -2,20 +2,20 @@
 
 (library (ucl process compat)
   (export process-launch process-kill process-wait)
-  (import (rnrs) (core primitives))
+  (import (rnrs) (prefix (core primitives) ypsilon:))
 
   ;; Ypsilon also does the high-level approach.
   ;;   It gives us a list of the form:
   ;;   (pid stdin stdout stderr)
   (define (process-launch path . args)
-    (let ((p (apply process path args)))
+    (let ((p (apply ypsilon:process path args)))
       (vector (cadr p) (caddr p) (cadddr p) (car p) #f)))
 
   (define (kill-helper flag pid)
     (let ((proc (process-launch "/bin/kill" flag (number->string pid))))
       (process-wait proc)
       (close-port (vector-ref proc 0))
-      (close-port (vector-ref prpc 1))
+      (close-port (vector-ref proc 1))
       (close-port (vector-ref proc 2))))
 
   (define (process-kill proc . sig)
@@ -26,7 +26,6 @@
       (else      (error 'process-kill "unknown signal" (car sig)))))
 
   (define (process-wait proc)
-    (define pid (vector-ref proc 3))
-    (process-wait pid #f))
+    (ypsilon:process-wait (vector-ref proc 3) #f))
 
 )

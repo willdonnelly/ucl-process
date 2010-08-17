@@ -90,7 +90,7 @@
         (values output errput exit-code))))
 
   (define (shell str . vals)
-    (let ((cmd (apply print str vals)))
+    (let ((cmd (apply template str vals)))
       (let-values (((output errput code) (shell-exec #t cmd)))
         (if (equal? code 0)
             output

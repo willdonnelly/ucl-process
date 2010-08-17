@@ -15,8 +15,8 @@
 
   (define (process-kill proc . sig)
     (case (if (null? sig) 'SIGTERM (car sig))
-      ((SIGTERM) (subprocess-kill (vector-ref proc 4)))
-      ((SIGKILL) (subprocess-kill (vector-ref proc 4)))
+      ((SIGTERM) (subprocess-kill (vector-ref proc 4) #f))
+      ((SIGKILL) (subprocess-kill (vector-ref proc 4) #t))
       (else      (error 'process-kill "unknown signal" (car sig)))))
 
   (define (process-wait proc)

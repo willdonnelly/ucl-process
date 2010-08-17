@@ -31,7 +31,7 @@
     (let ((proc (process-launch "/bin/kill" flag (number->string pid))))
       (process-wait proc)
       (close-port (vector-ref proc 0))
-      (close-port (vector-ref prpc 1))
+      (close-port (vector-ref proc 1))
       (close-port (vector-ref proc 2))))
 
   (define (process-kill proc . sig)
