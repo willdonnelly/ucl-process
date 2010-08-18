@@ -15,6 +15,7 @@
     (define pid (vector-ref proc 3))
     (case (if (null? sig) 'SIGTERM (car sig))
       ((SIGTERM) (kill pid 'SIGTERM))
+      ((SIGKILL) (kill pid 'SIGKILL))
       (else      (error 'process-kill "unknown signal" (car sig)))))
 
   (define (process-wait proc)
