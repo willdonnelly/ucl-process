@@ -18,4 +18,4 @@
 
 (depends ucl-prelude)
 
-(schemes ikarus mosh ypsilon plt larceny)
+(schemes ikarus larceny mosh racket ypsilon)
